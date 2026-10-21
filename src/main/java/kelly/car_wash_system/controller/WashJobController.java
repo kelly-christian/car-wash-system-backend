@@ -1,5 +1,6 @@
 package kelly.car_wash_system.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import kelly.car_wash_system.model.JobStatus;
 import kelly.car_wash_system.model.WashJob;
 import kelly.car_wash_system.service.WashJobService;
 
@@ -66,6 +68,26 @@ public class WashJobController {
 
         Optional<WashJob>message=washJobService.displayOneWashJob(id);
         return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/by-status")
+
+    public ResponseEntity<List<WashJob>>displayWashJobStatus(@RequestParam JobStatus status){
+
+        List<WashJob>message=washJobService.displayWashJobStatus(status);
+        return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+
+    @GetMapping (value = "/between")
+
+    public ResponseEntity<List<WashJob>>displayJobDateBetween(@RequestParam String start,@RequestParam String end){
+
+        LocalDate startDate=LocalDate.parse(start);
+        LocalDate endDate=LocalDate.parse(end);
+
+        List<WashJob>message=washJobService.displaywashJobDateBetween(startDate, endDate);
+        return new ResponseEntity<>(message,HttpStatus.OK);
+
     }
 
 }

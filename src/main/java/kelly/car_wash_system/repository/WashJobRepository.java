@@ -1,6 +1,7 @@
 package kelly.car_wash_system.repository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,5 +19,6 @@ public interface WashJobRepository extends JpaRepository<WashJob,UUID>{
     Optional<WashJob>findByVehicleType(String  vehicleType);
     Optional<WashJob>findByCustomers_Id(UUID id);
     Optional<WashJob>findByWashers_Id(UUID id);
-
+    List<WashJob>findByStatusOrderByJobDateAsc(JobStatus status);
+    List<WashJob>findByJobDateBetweenOrderByJobDateAsc(LocalDate start,LocalDate end);
 }

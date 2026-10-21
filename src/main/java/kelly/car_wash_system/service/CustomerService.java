@@ -68,4 +68,8 @@ public class CustomerService {
         return customerRepo.findById(id);
     }
 
+    public List<Customer>displayLastName(String lastName){
+       return customerRepo.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+    }
+
 }

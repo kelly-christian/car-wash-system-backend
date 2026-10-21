@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import kelly.car_wash_system.model.Customer;
+import kelly.car_wash_system.model.JobStatus;
 import kelly.car_wash_system.model.WashJob;
 import kelly.car_wash_system.model.Washer;
 import kelly.car_wash_system.repository.CustomerRepository;
@@ -114,6 +115,14 @@ public class WashJobService {
         }
 
         return washJobRepo.findById(id);
+    }
+
+    public List<WashJob>displayWashJobStatus(JobStatus status){
+        return washJobRepo.findByStatusOrderByJobDateAsc(status);
+    }
+
+    public List<WashJob>displaywashJobDateBetween(LocalDate start,LocalDate end){
+        return washJobRepo.findByJobDateBetweenOrderByJobDateAsc(start, end);
     }
 
 }
