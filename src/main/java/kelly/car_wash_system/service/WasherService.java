@@ -114,6 +114,12 @@ public class WasherService {
       return washerRepo.findById(id);
     }
 
+    public List<Washer>displayWasherByWashPackageName(String name){
+
+         return washerRepo.findByWashPackageNameIgnoreCase(name);
+
+    }
+
 
 
 

@@ -10,13 +10,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import kelly.car_wash_system.model.Customer;
+import kelly.car_wash_system.model.Washer;
 import kelly.car_wash_system.repository.CustomerRepository;
+import kelly.car_wash_system.repository.WasherRepository;
 
 @Service 
 public class CustomerService {
 
     @Autowired 
     private CustomerRepository customerRepo;
+    @Autowired 
+    private WasherRepository washerRepo;
 
     public String saveCustomer(Customer customer){
 
@@ -70,6 +74,20 @@ public class CustomerService {
 
     public List<Customer>displayLastName(String lastName){
        return customerRepo.findByLastNameIgnoreCaseOrderByFirstNameAsc(lastName);
+    }
+
+    public List<Customer>findCustomersOfWasher(UUID washerId){
+
+        Optional<Washer>washer=washerRepo.findById(washerId);
+
+        if(washer.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"washer Id doesnt exist");
+        }
+
+        return customerRepo.findByCustomersOfWasher(washerId);
+
+
+
     }
 
 }

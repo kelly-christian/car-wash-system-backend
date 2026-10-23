@@ -76,4 +76,12 @@ public class CustomerController {
 
     }
 
+    @GetMapping (value = "/of-washer/{washerId}")
+
+    public ResponseEntity<List<Customer>>findCustomersOfWasher(@PathVariable UUID washerId){
+
+        List<Customer>message=customerService.findCustomersOfWasher(washerId);
+        return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+
 }

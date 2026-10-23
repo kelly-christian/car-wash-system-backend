@@ -67,4 +67,12 @@ public class WasherController {
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
+    @GetMapping (value = "/by-wash-package")
+
+    public ResponseEntity<List<Washer>>displayWasherByWashPackageName(@RequestParam String name){
+
+        List<Washer>message=washerService.displayWasherByWashPackageName(name);
+        return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+
 }

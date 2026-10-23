@@ -69,5 +69,9 @@ public class WashBayService {
         return washBayRepo.findById(id);
     }
 
+    public List<WashBay>findFreeWashBay(){
+        return washBayRepo.findByFreeWashBay();
+    }
+
 
 }

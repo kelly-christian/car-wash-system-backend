@@ -67,4 +67,8 @@ public class WashPackageService {
         return washPackageRepo.findById(id);
     }
 
+    public List<WashPackage>findUsedWashPackage(){
+        return washPackageRepo.findByUnUsedWashPackage();
+    }
+
 }

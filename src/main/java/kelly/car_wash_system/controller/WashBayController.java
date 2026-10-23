@@ -65,4 +65,11 @@ public class WashBayController {
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
+    @GetMapping (value = "/free")
+
+    public ResponseEntity<List<WashBay>>findFreeWashBay(){
+        List<WashBay>message=washBayService.findFreeWashBay();
+        return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+
 }

@@ -67,4 +67,12 @@ public class WashPackageController {
         Optional<WashPackage>message=washPackageService.displayOneWashPackage(id);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
+
+    @GetMapping (value = "/unused")
+
+    public ResponseEntity<List<WashPackage>>findUnUsedWashPackage(){
+
+        List<WashPackage>message=washPackageService.findUsedWashPackage();
+        return new ResponseEntity<>(message,HttpStatus.OK);
     }
+ }
