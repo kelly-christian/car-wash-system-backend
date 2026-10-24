@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -74,5 +75,22 @@ public class WasherController {
         List<Washer>message=washerService.displayWasherByWashPackageName(name);
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
+
+    @PutMapping (value = "/{id}/washPackage/{washPackageId}")
+
+    public ResponseEntity<String>addWashPackageToWasher(@PathVariable UUID id,@PathVariable UUID washPackageId){
+
+        String message=washerService.addWashPackageToWasher(id, washPackageId);
+        return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+
+    @PatchMapping (value = "/{id}/washBay")
+
+    public ResponseEntity<String>changeWashBay(@PathVariable UUID id,@RequestParam int bayNumber){
+
+        String message=washerService.changeWashBay(id, bayNumber);
+        return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+    
 
 }

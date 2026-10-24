@@ -17,7 +17,6 @@ import kelly.car_wash_system.model.Washer;
 import kelly.car_wash_system.repository.CustomerRepository;
 import kelly.car_wash_system.repository.WashJobRepository;
 import kelly.car_wash_system.repository.WasherRepository;
-import tools.jackson.databind.deser.jdk.UUIDDeserializer;
 
 @Service 
 public class WashJobService {
@@ -43,10 +42,21 @@ public class WashJobService {
         if(washeR.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"washer ID provided doesnt exist");
         }
-      
+
+        if(washJob.getJobDate().isBefore(LocalDate.now())){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"wash job date can not be in the past");
+        }
+
+        Boolean jobExists=washJobRepo.existsByWashers_IdAndJobDateAndStatusNot(washerId,washJob.getJobDate(),JobStatus.CANCELED);
+        
+        if(jobExists){
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"washer already has wash job on that date");
+        }
+
         washJob.setCustomers(custo.get());
         washJob.setWashers(washeR.get());
 
+        washJob.setStatus(JobStatus.BOOKED);
         washJobRepo.save(washJob);
         return "washJOb saved successfull";
 
@@ -76,7 +86,7 @@ public class WashJobService {
 
         WashJob existingWashJob=washJ.get();
          existingWashJob.setJobDate(washJob.getJobDate());
-         existingWashJob.setStatus(washJob.getStatus());
+         //existingWashJob.setStatus(washJob.getStatus());
          existingWashJob.setVehicleType(washJob.getVehicleType());
 
          Customer newCustomer=custo.get();
@@ -123,6 +133,28 @@ public class WashJobService {
 
     public List<WashJob>displaywashJobDateBetween(LocalDate start,LocalDate end){
         return washJobRepo.findByJobDateBetweenOrderByJobDateAsc(start, end);
+    }
+
+    public String updateWashJobStatus(UUID id,JobStatus newStatus){
+
+        WashJob washJ=washJobRepo.findById(id)
+        .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"WashJob Id doent exist"));
+
+        JobStatus currentStatus=washJ.getStatus();
+
+        Boolean allowedStatus=(currentStatus==JobStatus.BOOKED 
+            &&(newStatus==JobStatus.IN_PROGRESS 
+            || newStatus==JobStatus.CANCELED)) || (currentStatus==JobStatus.IN_PROGRESS 
+            &&(newStatus==JobStatus.FINISHED || newStatus==JobStatus.CANCELED)
+            );
+
+        if(!allowedStatus){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"can not change status from "+ currentStatus +" to "+newStatus);
+        }
+        
+        washJ.setStatus(newStatus);
+        washJobRepo.save(washJ);
+        return "status updated successfull";
     }
 
 }

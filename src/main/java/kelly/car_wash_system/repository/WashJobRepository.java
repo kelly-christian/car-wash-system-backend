@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import kelly.car_wash_system.model.JobStatus;
 import kelly.car_wash_system.model.WashJob;
+import kelly.car_wash_system.model.Washer;
 
 @Repository 
 public interface WashJobRepository extends JpaRepository<WashJob,UUID>{
@@ -21,4 +22,5 @@ public interface WashJobRepository extends JpaRepository<WashJob,UUID>{
     Optional<WashJob>findByWashers_Id(UUID id);
     List<WashJob>findByStatusOrderByJobDateAsc(JobStatus status);
     List<WashJob>findByJobDateBetweenOrderByJobDateAsc(LocalDate start,LocalDate end);
+    Boolean existsByWashers_IdAndJobDateAndStatusNot(UUID id,LocalDate jobDate,JobStatus status);
 }

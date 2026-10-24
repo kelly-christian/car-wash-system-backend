@@ -120,7 +120,54 @@ public class WasherService {
 
     }
 
+   public String addWashPackageToWasher(UUID id,UUID washPackageId){
 
+      Optional<Washer>washer=washerRepo.findById(id);
+
+      if(washer.isEmpty()){
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Washer Id doesnt exist");
+      }
+      
+      Optional<WashPackage>washP=washPackageRepo.findById(washPackageId);
+
+      if(washP.isEmpty()){
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND,"WashPackage Id doesnt exist");
+      }
+      
+      Washer washeR=washer.get();
+      WashPackage washPa=washP.get();
+
+      if(washeR.getWashPackages().contains(washPa)){
+         throw new ResponseStatusException(HttpStatus.CONFLICT,"washer already has that washpackage");
+      }
+
+      washeR.getWashPackages().add(washPa);
+      washerRepo.save(washeR);
+      return "washPackage added to a washer successfull";
+
+   }
+
+   public String changeWashBay(UUID id,int bayNumber){
+
+      Optional<Washer>washer=washerRepo.findById(id);
+
+      if(washer.isEmpty()){
+         throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Washer Id doesnt exists");
+      }
+
+      WashBay newBay=washBayRepo.findByBayNumber(bayNumber)
+      .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"bayNumber doesnt exist"));
+
+      Boolean taken=washerRepo.existsByWashBays(newBay);
+
+      if(taken){
+         throw new ResponseStatusException(HttpStatus.CONFLICT,"bayNumber is taken by another washer");
+      }
+
+      Washer washeR=washer.get();
+      washeR.setWashBays(newBay);
+      return "Washbay changed successfull";
+   }
 
 
 }

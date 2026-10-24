@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import kelly.car_wash_system.model.WashBay;
 import kelly.car_wash_system.model.Washer;
 
 @Repository 
@@ -17,6 +18,7 @@ public interface WasherRepository extends JpaRepository<Washer,UUID>{
     Optional<Washer>findByLastName(String lastName);
     Optional<Washer>findByPhone(String phone);
     Optional<Washer>findByWashBays_Id(String id);
+    Boolean existsByWashBays(WashBay washBay);
     @Query ("""
         
         SELECT DISTINCT w from Washer w
