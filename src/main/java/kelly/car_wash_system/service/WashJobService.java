@@ -15,6 +15,7 @@ import kelly.car_wash_system.model.JobStatus;
 import kelly.car_wash_system.model.WashJob;
 import kelly.car_wash_system.model.Washer;
 import kelly.car_wash_system.repository.CustomerRepository;
+import kelly.car_wash_system.repository.JobChargeRepository;
 import kelly.car_wash_system.repository.WashJobRepository;
 import kelly.car_wash_system.repository.WasherRepository;
 
@@ -27,6 +28,8 @@ public class WashJobService {
     private WasherRepository washerRepo;
     @Autowired 
     private CustomerRepository customerRepo;
+    @Autowired 
+    private JobChargeRepository jobChargeRepo;
 
     public String saveWashJob(WashJob washJob,UUID customerId,UUID washerId){
 
@@ -105,6 +108,12 @@ public class WashJobService {
 
         if(washJ.isEmpty()){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,"washJob ID provided tobe deleted doesnt exist");
+        }
+
+        Boolean hasJobCharge=jobChargeRepo.existsByWashJobs(washJ.get());
+
+        if(hasJobCharge){
+            throw new ResponseStatusException(HttpStatus.CONFLICT,"this washJob has JobCharge delete them first");
         }
 
         washJobRepo.deleteById(id);
