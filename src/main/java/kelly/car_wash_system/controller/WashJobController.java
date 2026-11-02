@@ -99,4 +99,17 @@ public class WashJobController {
         return new ResponseEntity<>(message,HttpStatus.OK);
     }
 
+    @GetMapping (value = "/stats/by-status")
+
+    public ResponseEntity<List<Object[]>>washJobPerStatus(){
+        List<Object[]>message=washJobService.washJobPerStatus();
+        return new ResponseEntity<>(message,HttpStatus.OK);
+    }
+
+    @PatchMapping (value = "/cancel-day")
+
+    public ResponseEntity<?>cancelJobsByWasherAndDate(UUID washerId,LocalDate date){
+        return ResponseEntity.ok(washJobService.cancelJobsByWasherAndDate(washerId, date));
+    }
+
 }

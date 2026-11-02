@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import kelly.car_wash_system.model.JobStatus;
@@ -23,4 +26,32 @@ public interface WashJobRepository extends JpaRepository<WashJob,UUID>{
     List<WashJob>findByStatusOrderByJobDateAsc(JobStatus status);
     List<WashJob>findByJobDateBetweenOrderByJobDateAsc(LocalDate start,LocalDate end);
     Boolean existsByWashers_IdAndJobDateAndStatusNot(UUID id,LocalDate jobDate,JobStatus status);
+
+    @Query ("""
+        
+        select wj.status,count(wj.id) from WashJob wj
+        group by wj.status
+        """)
+    List<Object[]> findByWashJobPerStatus();  
+    
+    @Modifying 
+    @Query ("""
+
+        UPDATE WashJob wj
+        SET wj.status=:status
+        WHERE
+        wj.washers.id=:washerId
+        AND wj.jobDate=:date
+        AND wj.status <>:finishedStatus
+
+        """)
+
+    int cancelJobsByWasherAndDate(
+
+        @Param ("status") JobStatus status,
+        @Param ("washerId") UUID washerId,
+        @Param ("date") LocalDate date,
+        @Param ("finishedStatus") JobStatus finishedStatus
+
+    )  ;
 }

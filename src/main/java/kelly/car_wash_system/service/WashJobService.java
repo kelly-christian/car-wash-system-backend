@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.transaction.Transactional;
 import kelly.car_wash_system.model.Customer;
 import kelly.car_wash_system.model.JobStatus;
 import kelly.car_wash_system.model.WashJob;
@@ -164,6 +165,22 @@ public class WashJobService {
         washJ.setStatus(newStatus);
         washJobRepo.save(washJ);
         return "status updated successfull";
+    }
+
+    public List<Object[]>washJobPerStatus(){
+        return washJobRepo.findByWashJobPerStatus();
+    }
+
+    @Transactional 
+    public String cancelJobsByWasherAndDate(UUID washerId,LocalDate date){
+
+        if(!washerRepo.existsById(washerId)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,"washer is absent");
+        }
+        
+        int cancelled=washJobRepo.cancelJobsByWasherAndDate(JobStatus.CANCELED, washerId, date, JobStatus.FINISHED);
+
+        return cancelled +"washJobs cancelled";
     }
 
 }
